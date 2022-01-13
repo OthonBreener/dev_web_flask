@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Flasky{% endblock %}
 
@@ -6,4 +7,6 @@
 <div class="page-header">
   <h1>Peter</h1>
 </div>
+
+{{ wtf.quick_form(form) }}
 {% endblock %}
