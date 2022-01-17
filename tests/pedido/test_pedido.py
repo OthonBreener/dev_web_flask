@@ -1,6 +1,6 @@
 from typing import Tuple
 from datetime import datetime
-from aplicacao.pedido.models import ForaDeEstoque, LoteMercadoriaDisponivel, Pedido, alocar_pedido
+from aplicacao.alocacoes.dominio.models import ForaDeEstoque, LoteMercadoriaDisponivel, Pedido, alocar_pedido
 from pytest import mark, raises
 
 

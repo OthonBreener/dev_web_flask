@@ -2,7 +2,7 @@ from sqlalchemy.orm import mapper, relationship
 from sqlalchemy import MetaData, Table, Column, Integer, String
 
 # ! O Orm conhece o domínio e não o contrário ( Inversão de dependências )
-from aplicacao.pedido.models import Pedido
+from aplicacao.alocacoes.dominio.models import Pedido
 
 metadata = MetaData()
 

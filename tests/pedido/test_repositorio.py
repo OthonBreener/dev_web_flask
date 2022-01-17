@@ -1,7 +1,7 @@
 from pytest import mark
 from datetime import datetime
-from aplicacao.pedido.models import LoteMercadoriaDisponivel
-from aplicacao.pedido.repositorio import RepositorioSqlAlchemy
+from aplicacao.alocacoes.dominio.models import LoteMercadoriaDisponivel
+from aplicacao.alocacoes.repositorio import RepositorioSqlAlchemy, RepositorioFake
 
 @mark.task
 def test_repositorio_pode_salvar_um_lote_de_mercadorias(session):
