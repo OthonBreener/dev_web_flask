@@ -13,7 +13,8 @@ def montando_lote_disponivel_e_pedido(
     lote_disponivel = LoteMercadoriaDisponivel(
         'smartphone-001',
         identificador,
-        quantidade_disponivel
+        quantidade_disponivel,
+        date=None
     )
     pedido = Pedido('ref1', identificador, quantidade_pedido)
 
@@ -58,7 +59,8 @@ def test_nao_pode_alocar_se_o_identificador_nao_for_igual():
     lote_disponivel = LoteMercadoriaDisponivel(
         'smartphone-001',
         'samsung',
-        20
+        20,
+        date=None
     )
     pedido = Pedido('ref1', 'motorola', 2)
 
