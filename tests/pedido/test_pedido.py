@@ -166,7 +166,7 @@ def test_retorna_o_lote_no_qual_o_pedido_foi_alocado():
 
     assert alocacao == rapido.referencia
 
-@mark.task
+
 def test_levanta_excessao_fora_de_estoque_se_nao_poder_alocar_pedido():
 
     lote = LoteMercadoriaDisponivel(

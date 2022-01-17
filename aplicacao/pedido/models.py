@@ -14,7 +14,7 @@ class Pedido:
     * fronzen=True implementa: __setattr__ e __delattr__
     * Para alterar o id: setattr(Pedido, 'id', 'Novo_id')
     """
-    id: str 
+    id_pedido: str 
     identificador: str
     quantidade: int
 
