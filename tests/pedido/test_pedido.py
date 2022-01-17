@@ -1,6 +1,8 @@
-from datetime import datetime
-from aplicacao.pedido.models import LoteMercadoriaDisponivel, Pedido 
 from typing import Tuple
+from datetime import datetime
+from aplicacao.pedido.models import ForaDeEstoque, LoteMercadoriaDisponivel, Pedido, alocar_pedido
+from pytest import mark, raises
+
 
 def montando_lote_disponivel_e_pedido(
     identificador: str, 
@@ -11,8 +13,7 @@ def montando_lote_disponivel_e_pedido(
     lote_disponivel = LoteMercadoriaDisponivel(
         'smartphone-001',
         identificador,
-        quantidade_disponivel,
-        datetime.utcnow()
+        quantidade_disponivel
     )
     pedido = Pedido('ref1', identificador, quantidade_pedido)
 
@@ -57,8 +58,7 @@ def test_nao_pode_alocar_se_o_identificador_nao_for_igual():
     lote_disponivel = LoteMercadoriaDisponivel(
         'smartphone-001',
         'samsung',
-        20,
-        datetime.utcnow()
+        20
     )
     pedido = Pedido('ref1', 'motorola', 2)
 
@@ -84,3 +84,97 @@ def test_alocacoes_e_idempotente():
     lote_disponivel.alocar_pedido(pedido)
 
     assert lote_disponivel.quantidade_disponivel == 18
+
+
+def test_preferencia_por_lotes_atuais_para_alocar_pedido():
+
+    lote_disponivel = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        date=None
+    )
+
+    lote_para_amanha = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        '18/01/2022'
+    )
+
+    pedido = Pedido('ref1', 'samsung A2', 2)
+
+    alocar_pedido(pedido, [lote_disponivel, lote_para_amanha])
+
+    assert lote_disponivel.quantidade_disponivel == 28
+    assert lote_para_amanha.quantidade_disponivel == 30
+
+
+def test_preferencia_por_lote_disponivel_de_imediato():
+
+    rapido = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        date='17/01/2022'
+    )
+
+    medio = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        '21/01/2022'
+    )
+
+    longo = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        '11/02/2022'
+    )
+
+    pedido = Pedido('ref1', 'samsung A2', 2)
+
+    alocar_pedido(pedido, [rapido, medio, longo])
+
+    assert rapido.quantidade_disponivel == 28
+    assert medio.quantidade_disponivel == 30
+    assert longo.quantidade_disponivel == 30
+
+
+def test_retorna_o_lote_no_qual_o_pedido_foi_alocado():
+
+    rapido = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        date=None
+    )
+
+    medio = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        '21/01/2022'
+    )
+
+    pedido = Pedido('ref1', 'samsung A2', 2)
+
+    alocacao = alocar_pedido(pedido, [rapido, medio])
+
+    assert alocacao == rapido.referencia
+
+@mark.task
+def test_levanta_excessao_fora_de_estoque_se_nao_poder_alocar_pedido():
+
+    lote = LoteMercadoriaDisponivel(
+        'smartphone-001',
+        'samsung A2',
+        30,
+        date=None
+    )
+
+    alocar_pedido(Pedido('ref1', 'samsung A2', 30), [lote])
+
+    with raises(ForaDeEstoque, match='samsung A2'):
+        alocar_pedido(Pedido('ref2', 'samsung A2', 1), [lote])
