@@ -63,3 +63,24 @@ def test_nao_pode_alocar_se_o_identificador_nao_for_igual():
     pedido = Pedido('ref1', 'motorola', 2)
 
     assert lote_disponivel.pode_alocar(pedido) is False
+
+
+def test_pode_dealocar_pedidos_alocados():
+
+    lote_disponivel, pedido = montando_lote_disponivel_e_pedido(
+        'samsung A2', 20, 2)
+
+    lote_disponivel.dealocar_pedido(pedido)
+
+    assert lote_disponivel.quantidade_disponivel == 20
+
+
+def test_alocacoes_e_idempotente():
+
+    lote_disponivel, pedido = montando_lote_disponivel_e_pedido(
+        'samsung A2', 20, 2)
+
+    lote_disponivel.alocar_pedido(pedido)
+    lote_disponivel.alocar_pedido(pedido)
+
+    assert lote_disponivel.quantidade_disponivel == 18

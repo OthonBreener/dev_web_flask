@@ -15,14 +15,33 @@ class LoteMercadoriaDisponivel:
         self.referencia = referencia
         self.identificador = identificador
         self.date = date
-        self.quantidade_disponivel = quantidade
+        self._quantidade_disponivel = quantidade
+        self._alocacoes = set() # type: Set[Pedido]
 
 
     def alocar_pedido(self, pedido: Pedido) -> None:
-        self.quantidade_disponivel -= pedido.quantidade
+
+        if self.pode_alocar(pedido):
+            self._alocacoes.add(pedido)
     
+
+    def dealocar_pedido(self, pedido: Pedido):
+        
+        if pedido in self._alocacoes:
+            self._alocacoes.remove(pedido)
+
 
     def pode_alocar(self, pedido: Pedido) -> bool:
 
         return (self.identificador == pedido.identificador
             and self.quantidade_disponivel >= pedido.quantidade)
+    
+
+    @property
+    def quantidade_alocada(self) -> int:
+        return sum(pedido.quantidade for pedido in self._alocacoes)
+    
+
+    @property
+    def quantidade_disponivel(self) -> int:
+        return self._quantidade_disponivel - self.quantidade_alocada
