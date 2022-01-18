@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from aplicacao.alocacoes.dominio.models import LoteMercadoriaDisponivel
+from contexto_de_negocio.alocacoes.dominio.models import LoteMercadoriaDisponivel
 from typing import List
 
 

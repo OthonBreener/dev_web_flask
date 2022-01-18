@@ -2,7 +2,7 @@ from pytest import fixture
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 
-from aplicacao.alocacoes.adaptadores.orm import start_mappers, metadata
+from contexto_de_negocio.alocacoes.adaptadores.orm import start_mappers, metadata
 
 @fixture
 def in_memory_db():
