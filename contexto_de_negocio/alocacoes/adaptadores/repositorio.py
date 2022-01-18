@@ -1,3 +1,13 @@
+"""
+! Padrão de Repositório: situado entre o modelo de dominio e o banco de dados (orm)
+
+Abstração simplificadora sobre armazenamento de dados, permite desacoplar
+a camada de modelo da camada de dados. Esse padrão torna o sistema mais
+testável, ocultando as complexidades do banco de dados. 
+
+"""
+
+
 from abc import ABC, abstractmethod
 from contexto_de_negocio.alocacoes.dominio.models import LoteMercadoriaDisponivel
 from typing import List
