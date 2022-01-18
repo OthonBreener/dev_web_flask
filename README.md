@@ -5,7 +5,7 @@ flask run, encontre o nome do scprit python que
 contém a instância da aplicação FLASK().
 
 ```
-export FLASK_APP=app/app.py
+export FLASK_APP=aplicacao/pontos_de_entrada/app.py
 ```
 
 * Váriavel de ambiente necessária para iniciar o modo
