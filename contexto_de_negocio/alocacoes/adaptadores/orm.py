@@ -9,8 +9,8 @@ mudar a camada de dominio.
 
 
 from sqlalchemy.orm import mapper, relationship
-from sqlalchemy import MetaData, Table, Column, Integer, String
-from contexto_de_negocio.alocacoes.dominio.models import Pedido
+from sqlalchemy import MetaData, Table, Column, Integer, String, Date, ForeignKey
+from contexto_de_negocio.alocacoes.dominio.models import Pedido, LoteMercadoriaDisponivel
 
 metadata = MetaData()
 
@@ -24,5 +24,33 @@ pedidos = Table(
 )
 
 
+lotes = Table(
+    'lotes',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('referencia', String(255)),
+    Column('identificador', String(255)),
+    Column('_quantidade_disponivel', Integer, nullable=False),
+    Column('data', Date, nullable=True)
+)
+
+
+alocacoes = Table(
+    'alocacoes',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('pedido_id', ForeignKey('pedidos.id')),
+    Column('lote_id', ForeignKey('lotes.id'))
+)
+
+
 def start_mappers():
-    mapenado_pedidos = mapper(Pedido, pedidos)
+    mapeando_pedidos = mapper(Pedido, pedidos)
+    mapper(
+        LoteMercadoriaDisponivel, lotes,
+        properties = {
+            '_alocacoes': relationship(
+                mapeando_pedidos, secondary=alocacoes, collection_class=set
+            )
+        }
+    )

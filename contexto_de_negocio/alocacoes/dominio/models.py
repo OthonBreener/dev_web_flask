@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
-@dataclass(frozen=True)
+
+@dataclass(unsafe_hash=True)
 class Pedido:
     """
     A classe Pedido é um objeto de valor: Objeto de valor é

@@ -3,10 +3,10 @@ from os import getenv
 
 def get_postgres_uri():
     host = getenv('DB_HOST', 'localhost')
-    porta = 54321 if host == 'localhost' else 5432
+    porta = 5432 if host == 'localhost' else 5432
 
     senha = getenv('DB_PASSWORD', 'abc123')
-    usuario, db_name = 'allocation', 'allocation'
+    usuario, db_name = 'postegres', 'cosmic_postgres'
 
     return f'postgresql://{usuario}:{senha}@{host}:{porta}/{db_name}'
 

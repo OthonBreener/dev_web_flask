@@ -19,6 +19,8 @@ app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 @app.route('/alocacoes', methods=['POST'])
 def end_point_de_alocacoes():
 
+    import ipdb; ipdb.set_trace()
+    
     session = get_session()
     lotes = RepositorioSqlAlchemy(session)
     pedido = Pedido(

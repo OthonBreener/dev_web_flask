@@ -1,3 +1,4 @@
+from pytest import mark
 from uuid import uuid4
 from requests import post
 from contexto_de_negocio.alocacoes.config import get_api_url
@@ -16,7 +17,7 @@ def identificador_aleatorio(name="") -> str:
 
 
 def id_de_pedido_aleatorio(name="") -> str:
-    return f'pedido-{name}-{sufixo_aleatorio}'
+    return f'pedido-{name}-{sufixo_aleatorio()}'
 
 
 def test_api_retorna_alocacao(add_estoque):
@@ -43,3 +44,14 @@ def test_api_retorna_alocacao(add_estoque):
 
     assert r.status_code == 201
     assert r.json()['referencia'] == lote1
+
+@mark.task
+def test_end_point_de_alocacoes_retorna_200():
+
+    identificador1 = identificador_aleatorio()
+    id_pedido = id_de_pedido_aleatorio()
+
+    pedido = {'id_pedido': id_pedido, 'identificador': identificador1, 'quantidade': 3}
+
+    url = get_api_url()
+    post(f'{url}/alocacoes', json=pedido)
