@@ -14,7 +14,7 @@ bootsprap = Bootstrap(app)
 def user():
     form = Usuario()
     if form.validate_on_submit():
-        sesseion['name'] = form.name
+        session['name'] = form.name
         return redirect(url_for('user'))
 
     return render_template(
