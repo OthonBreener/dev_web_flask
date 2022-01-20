@@ -2,7 +2,8 @@ from os import getenv, path
 from flask import Flask, render_template, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from formularios.models import Usuario as User
+from flask_migrate import Migrate
+from formularios.models import Usuario as UserTamplete
 
 
 basedir = path.abspath(path.dirname(__file__))
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 database = SQLAlchemy(app)
 
+migrate = Migrate(app, database)
 
 class Produto(database.Model):
     __tablename__ = 'produtos'
@@ -57,17 +59,38 @@ class Usuario(database.Model):
 
 bootsprap = Bootstrap(app)
 
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=database, Usuario=Usuario)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def user():
-    form = User()
+    form = UserTamplete()
     if form.validate_on_submit():
-        session['name'] = form.name
+
+        user = Usuario.query.filter_by(user_name=form.name.data).first()
+        if user is None:
+
+            user = Usuario(user_name=form.name.data)
+            database.session.add(user)
+            database.session.commit()
+
+            session['know'] = False
+
+        else:
+            session['know'] = True
+
+        session['name'] = form.name.data
+        form.name.data = ''
         return redirect(url_for('user'))
 
     return render_template(
         'pagina_inicial/user.html',
         form=form,
-        name=session.get('name'))
+        name=session.get('name'),
+        know=session.get('know', False)
+    )
 
 #rotas de erro
 
