@@ -2,7 +2,7 @@ from os import getenv, path
 from flask import Flask, render_template, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from formularios.models import Usuario
+from formularios.models import Usuario as User
 
 
 basedir = path.abspath(path.dirname(__file__))
@@ -59,7 +59,7 @@ bootsprap = Bootstrap(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def user():
-    form = Usuario()
+    form = User()
     if form.validate_on_submit():
         session['name'] = form.name
         return redirect(url_for('user'))
