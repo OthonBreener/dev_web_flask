@@ -9,6 +9,10 @@ app = create_app(getenv('FLASK_CONFIG'))
 migrate = Migrate(app, database)
 
 
+@app.route('/')
+def home_page():
+    return {'message':'ok'}
+
 @app.shell_context_processor
 def make_shell_context():
     return dict(db=database, Usuario=Usuario)

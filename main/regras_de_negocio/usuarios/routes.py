@@ -8,6 +8,7 @@ bp = Blueprint('bp', __name__, url_prefix='/user')
 
 @bp.route('/', methods=['GET', 'POST'])
 def user():
+    
     form = UserTamplete()
     if form.validate_on_submit():
 
