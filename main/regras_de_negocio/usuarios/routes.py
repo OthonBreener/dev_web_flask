@@ -2,7 +2,7 @@ from flask import Blueprint, session, render_template, redirect, url_for
 
 from main.regras_de_negocio.usuarios.models import Usuario
 from main.formularios.models import Usuario as UserTamplete
-from main.app import database
+from main import database
 
 bp = Blueprint('bp', __name__, url_prefix='/user')
 
