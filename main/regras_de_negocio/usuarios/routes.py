@@ -1,39 +1,65 @@
-from flask import Blueprint, session, render_template, redirect, url_for
+from flask import Blueprint, flash, render_template, redirect, url_for, request
+from flask_login import login_required, login_user, logout_user
 
 from main.regras_de_negocio.usuarios.models import Usuario
-from main.formularios.models import Usuario as UserTamplete
+from main.formularios.auth import LoginForm, RegistrationForm
 from main import database
+
 
 bp = Blueprint('bp', __name__, url_prefix='/user')
 
-@bp.route('/', methods=['GET', 'POST'])
-def user():
-    
-    form = UserTamplete()
+
+@bp.route('/')
+def index():
+    return render_template('pagina_inicial/index.html')
+
+
+@bp.route('/register')
+def register():
+    form = RegistrationForm()
     if form.validate_on_submit():
+        user = Usuario(
+            email=form.email.data,
+            user_name=form.user_name.data,
+            password=form.password.data
+        )
 
-        user = Usuario.query.filter_by(user_name=form.name.data).first()
-        if user is None:
+        database.session.add(user)
+        database.session.commit()
+        flash('Você pode fazer login!')
+        return redirect(url_for('bp.login'))
 
-            user = Usuario(user_name=form.name.data)
-            database.session.add(user)
-            database.session.commit()
+    return render_template('auth/register.html', form=form)
 
-            session['know'] = False
 
-        else:
-            session['know'] = True
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
 
-        session['name'] = form.name.data
-        form.name.data = ''
-        return redirect(url_for('bp.user'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Usuario.query.filter_by(email=form.email.data).first()
 
-    return render_template(
-        'pagina_inicial/user.html',
-        form=form,
-        name=session.get('name'),
-        know=session.get('know', False)
-    )
+        if user is not None and user.verify_password(form.senha.data):
+            login_user(user, form.lembrar_de_mim.data)
+            next = request.args.get('next')
+        
+            if next is None or not next.startswith('/'):
+                next = url_for('bp.index') # nome da função view acossiada
+
+            return redirect(next)
+
+        flash('Username ou senha invalidos')
+
+    return render_template('auth/login.html', form=form)
+
+
+@bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Você foi desconectado!')
+    return redirect(url_for('bp.index'))
+
 
 def configure(app):
     app.register_blueprint(bp)

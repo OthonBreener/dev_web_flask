@@ -14,3 +14,12 @@ de depuração:
 ```
 export FLASK_DEBUG=1
 ```
+
+## Rodando os tests:
+
+* Rodando todos os testes:
+  
+python -m unittest
+
+*  Rodando um arquivo especifico: 
+python -m unittest tests/unit/test_user_model.py
