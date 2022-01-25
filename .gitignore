@@ -3,3 +3,4 @@ __pycache__
 .env
 data.sqlite
 database.db
+database_fake.db

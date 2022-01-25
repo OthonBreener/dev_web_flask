@@ -15,6 +15,7 @@ class Usuario(UserMixin, database.Model):
     user_name = database.Column(database.String(64), unique=True, index=True)
     password_hash = database.Column(database.String(128))
     confirmed = database.Column(database.Boolean, default=False)
+    role_id = database.Column(database.Integer, database.ForeignKey('regras.id'))
 
     def __repr__(self) -> str:
         return '<Usuario %r>' % self.user_name
@@ -22,19 +23,19 @@ class Usuario(UserMixin, database.Model):
 
     def __init__(self, **kwargs) -> None:
         super(Usuario, self).__init__(**kwargs)
-        if self.RegrasDeAcesso is None:
+        if self.regra is None:
             if self.email == current_app.config['ADMIN']:
-                self.RegrasDeAcesso = RegrasDeAcesso.query.filter_by(
+                self.regra = RegrasDeAcesso.query.filter_by(
                     name='administrador').first()
             
-            if self.RegrasDeAcesso is None:
-                self.RegrasDeAcesso = RegrasDeAcesso.query.filter_by(
+            if self.regra is None:
+                self.regra = RegrasDeAcesso.query.filter_by(
                     default=True).first()
     
 
     def can(self, permission):
-        return (self.RegrasDeAcesso is not None and 
-                self.RegrasDeAcesso.has_permission(permission))
+        return (self.regra is not None and 
+                self.regra.has_permission(permission))
     
 
     def is_administrador(self):

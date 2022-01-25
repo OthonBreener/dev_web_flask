@@ -19,7 +19,7 @@ class DevelopmentConfig(Config):
 
 class TestConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = getenv('TEST_DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = getenv('TEST_DATABASE_URL', 'sqlite:///database_fake.db')
 
 
 class ProductionConfig(Config):

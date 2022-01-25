@@ -1,4 +1,3 @@
-from gettext import find
 from main import database
 
 
@@ -10,7 +9,7 @@ class RegrasDeAcesso(database.Model):
     name = database.Column(database.String(64), unique=True)
     default = database.Column(database.Boolean, default=False, index=True)
     permissions = database.Column(database.Integer)
-    usuarios = database.relationship('Usuario', backref='RegrasDeAcesso', lazy='dynamic')
+    usuarios = database.relationship('Usuario', backref='regra', lazy='dynamic')
 
 
     def __init__(self, **kwargs) -> None:
@@ -24,7 +23,7 @@ class RegrasDeAcesso(database.Model):
 
 
     def add_permission(self, param):
-        if not self.has_permission():
+        if not self.has_permission(param):
             self.permissions += param
 
 
@@ -35,6 +34,7 @@ class RegrasDeAcesso(database.Model):
 
     def reset_permissions(self):
         self.permissions = 0
+    
     
     @staticmethod
     def inserir_regras():
@@ -61,7 +61,7 @@ class RegrasDeAcesso(database.Model):
             
             find_regra.default = (find_regra.name == regra_default)
             database.session.add(find_regra)
-            
+
         database.session.commit()
 
 

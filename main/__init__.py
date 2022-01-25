@@ -7,7 +7,6 @@ from . import config
 
 database = SQLAlchemy()
 bootsprap = Bootstrap()
-
 login_manager = LoginManager()
 login_manager.login_view = 'user.login'
 
