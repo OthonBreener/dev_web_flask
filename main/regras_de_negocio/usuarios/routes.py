@@ -1,5 +1,7 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import login_required, login_user, logout_user
+from main.regras_de_negocio.governancia.models import Permissions
+from main.regras_de_negocio.usuarios.decoradores.decorador import admin_required, permission_required
 
 from main.regras_de_negocio.usuarios.models import Usuario
 from main.formularios.auth import LoginForm, RegistrationForm
@@ -59,6 +61,13 @@ def logout():
     logout_user()
     flash('Você foi desconectado!')
     return redirect(url_for('bp.index'))
+
+
+@bp.route('/admin')
+@login_required
+@admin_required
+def apenas_adms():
+    return {'message':'Apenas AMDs'}
 
 
 def configure(app):

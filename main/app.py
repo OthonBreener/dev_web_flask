@@ -2,7 +2,7 @@ from os import getenv
 from flask import render_template
 from flask_migrate import Migrate
 from main import create_app, database
-
+from main.regras_de_negocio.governancia.models import Permissions
 from main.regras_de_negocio.usuarios.models import Usuario
 
 app = create_app(getenv('FLASK_CONFIG'))
@@ -17,6 +17,10 @@ def home_page():
 def make_shell_context():
     return dict(db=database, Usuario=Usuario)
 
+
+@app.app_context_processor
+def inject_permissions():
+    return dict(Permissions=Permissions)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -1,3 +1,4 @@
+from gettext import find
 from main import database
 
 
@@ -34,10 +35,40 @@ class RegrasDeAcesso(database.Model):
 
     def reset_permissions(self):
         self.permissions = 0
+    
+    @staticmethod
+    def inserir_regras():
+        regras = {
+            'usuario':[Permissions.ADICIONAR_AO_CARRINHO, Permissions.FINALIZAR_COMPRA],
+            'administrador':[
+                Permissions.VISUALIZAR_USUARIOS_CADASTRADOS,
+                Permissions.REMOVER_USUARIO_CADASTRADO,
+                Permissions.ADMINISTRADOR
+            ]
+        }
+
+        regra_default = 'usuario'
+        for regra in regras:
+
+            find_regra = RegrasDeAcesso.query.filter_by(name=regra).first()
+            if find_regra is None:
+                find_regra = RegrasDeAcesso(name=regra)
+            
+            find_regra.reset_permissions()
+
+            for permission in regras[regra]:
+                find_regra.add_permission(permission)
+            
+            find_regra.default = (find_regra.name == regra_default)
+            database.session.add(find_regra)
+            
+        database.session.commit()
 
 
 class Permissions:
     ADICIONAR_AO_CARRINHO=1
     FINALIZAR_COMPRA=2
-    ADMINISTRADOR=4
+    VISUALIZAR_USUARIOS_CADASTRADOS=4
+    REMOVER_USUARIO_CADASTRADO=8
+    ADMINISTRADOR=16
 

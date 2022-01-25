@@ -1,8 +1,10 @@
+from email.policy import default
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from main import login_manager, database
+from main.regras_de_negocio.governancia.models import Permissions, RegrasDeAcesso
 
 class Usuario(UserMixin, database.Model):
 
@@ -16,6 +18,27 @@ class Usuario(UserMixin, database.Model):
 
     def __repr__(self) -> str:
         return '<Usuario %r>' % self.user_name
+
+
+    def __init__(self, **kwargs) -> None:
+        super(Usuario, self).__init__(**kwargs)
+        if self.RegrasDeAcesso is None:
+            if self.email == current_app.config['ADMIN']:
+                self.RegrasDeAcesso = RegrasDeAcesso.query.filter_by(
+                    name='administrador').first()
+            
+            if self.RegrasDeAcesso is None:
+                self.RegrasDeAcesso = RegrasDeAcesso.query.filter_by(
+                    default=True).first()
+    
+
+    def can(self, permission):
+        return (self.RegrasDeAcesso is not None and 
+                self.RegrasDeAcesso.has_permission(permission))
+    
+
+    def is_administrador(self):
+        return self.can(Permissions.ADMINISTRADOR)
 
 
     @property
@@ -52,6 +75,17 @@ class Usuario(UserMixin, database.Model):
         return True
 
 
+class UsuarioAnonimo(AnonymousUserMixin):
+
+    def can(self, permission):
+        return False
+    
+    def is_administrador(self):
+        False
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
+
+login_manager.anonymous_user = UsuarioAnonimo
