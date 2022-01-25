@@ -1,9 +1,8 @@
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from main import database
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from main import login_manager
+from main import login_manager, database
 
 class Usuario(UserMixin, database.Model):
 
