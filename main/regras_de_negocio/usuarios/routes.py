@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, login_user, logout_user
+from main.formularios.perfil import EditarPerfil
 from main.regras_de_negocio.governancia.models import Permissions
 from main.regras_de_negocio.usuarios.decoradores.decorador import admin_required, permission_required
 from main.regras_de_negocio.usuarios.models import Usuario
@@ -19,6 +20,29 @@ def index():
 def perfil_de_usuario(user_name):
     user = Usuario.query.filter_by(user_name=user_name).first_or_404()
     return render_template('usuarios/perfil.html', user=user)
+
+
+@bp.route('/editar-perfil', methods=['GET', 'POST'])
+@login_required
+def editar_perfil():
+
+    form = EditarPerfil()
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+        current_user.location = form.location.data
+        current_user.about_me = form.about_me.data
+        
+        database.session.add(current_user._get_current_object())
+        database.session.commit()
+        flash('Seu perfil foi atualizado com sucesso!')
+        
+        return redirect(url_for('bp.perfil_de_usuario', user_name=current_user.user_name))
+
+    form.name.data = current_user.name
+    form.location.data = current_user.location
+    form.about_me.data = current_user.about_me
+
+    return render_template('usuarios/editar_perfil.html', form=form)
 
 
 @bp.route('/register', methods=[ 'GET', 'POST'])

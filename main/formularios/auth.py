@@ -1,5 +1,4 @@
 from flask_wtf import FlaskForm
-from pyparsing import Regex
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from main.regras_de_negocio.usuarios.models import Usuario
