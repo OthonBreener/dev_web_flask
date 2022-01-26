@@ -11,6 +11,9 @@ class RegrasDeAcesso(database.Model):
     permissions = database.Column(database.Integer)
     usuarios = database.relationship('Usuario', backref='regra', lazy='dynamic')
 
+    def __repr__(self) -> str:
+        return '<RegrasDeAcesso %r>' % self.name
+
 
     def __init__(self, **kwargs) -> None:
         super(RegrasDeAcesso, self).__init__(**kwargs)
@@ -20,7 +23,6 @@ class RegrasDeAcesso(database.Model):
 
     def has_permission(self, param):
         return self.permissions & param == param
-
 
     def add_permission(self, param):
         if not self.has_permission(param):
