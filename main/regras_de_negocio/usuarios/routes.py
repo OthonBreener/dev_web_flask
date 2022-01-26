@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, login_user, logout_user
-from main.formularios.perfil import EditarPerfil
-from main.regras_de_negocio.governancia.models import Permissions
+from main.formularios.perfil import AdmEditPerfil, EditarPerfil
+from main.regras_de_negocio.governancia.models import Permissions, RegrasDeAcesso
 from main.regras_de_negocio.usuarios.decoradores.decorador import admin_required, permission_required
 from main.regras_de_negocio.usuarios.models import Usuario
 from main.formularios.auth import LoginForm, RegistrationForm
@@ -43,6 +43,39 @@ def editar_perfil():
     form.about_me.data = current_user.about_me
 
     return render_template('usuarios/editar_perfil.html', form=form)
+
+
+@bp.route('/editar-perfil/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def editar_perfil_admin(id):
+
+    user = Usuario.query.get_or_404(id)
+    form = AdmEditPerfil(user=user)
+    if form.validate_on_submit():
+        user.email = form.email.data
+        user.user_name = form.user_name.data
+        user.confirmed = form.confirmed.data
+        user.regra = RegrasDeAcesso.query.get(form.regras.data)
+        user.name = form.name.data
+        user.location = form.location.data
+        user.about_me = form.about_me.data
+        
+        database.session.add(user)
+        database.session.commit()
+        flash('Perfil atualizado com sucesso!')
+
+        return redirect(url_for('bp.perfil_de_usuario', user_name=user.user_name))
+    
+    form.email.data = user.email
+    form.user_name.data = user.user_name
+    form.confirmed.data = user.confirmed
+    form.regras.data = user.role_id
+    form.name.data = user.name
+    form.location.data = user.location
+    form.about_me.data = user.about_me
+
+    return render_template('usuarios/edit_adm_perfil.html', form=form, user=user)
 
 
 @bp.route('/register', methods=[ 'GET', 'POST'])

@@ -10,7 +10,7 @@
     <p>
         {% if user.name %}{{ user.name }}{% endif %}
         {% if user.location %}
-            From <a href="http://maps.google.com/?q={{ user.location }}">
+            - <a href="http://maps.google.com/?q={{ user.location }}">
                 {{ user.location }}
             </a>
         {% endif %}
@@ -29,6 +29,12 @@
     <p>
         Visto por último em: {{ user.visto_por_ultimo }}
     </p>
+
+    {% if user == current_user %}
+    <a class="btn btn-default" href="{{ url_for('bp.editar_perfil') }}">
+        Editar Perfil
+    </a>
+    {% endif %}
 </div>
 
 {% endblock %}
