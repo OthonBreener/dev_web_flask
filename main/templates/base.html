@@ -16,8 +16,17 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
+        <li><a href="/user">Home</a></li>
+        
+        {% if current_user.is_authenticated %} 
+        <li>
+          <a href="{{ url_for('bp.perfil_de_usuario', user_name=current_user.user_name) }}">
+            Perfil
+          </a>
+        </li>  
+        {% endif %}
       </ul>
+
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
           <li><a href="{{ url_for('bp.logout') }}"> Sair</a></li>

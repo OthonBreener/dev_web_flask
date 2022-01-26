@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, render_template, redirect, url_for, request
-from flask_login import login_required, login_user, logout_user
+from flask_login import current_user, login_required, login_user, logout_user
 from main.regras_de_negocio.governancia.models import Permissions
 from main.regras_de_negocio.usuarios.decoradores.decorador import admin_required, permission_required
 from main.regras_de_negocio.usuarios.models import Usuario
@@ -15,7 +15,13 @@ def index():
     return render_template('pagina_inicial/index.html')
 
 
-@bp.route('/register')
+@bp.route('/<user_name>')
+def perfil_de_usuario(user_name):
+    user = Usuario.query.filter_by(user_name=user_name).first_or_404()
+    return render_template('usuarios/perfil.html', user=user)
+
+
+@bp.route('/register', methods=[ 'GET', 'POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -54,6 +60,11 @@ def login():
     return render_template('auth/login.html', form=form)
 
 
+@bp.route('/unconfirmed')
+def unconfirmed():
+    pass
+
+
 @bp.route('/logout')
 @login_required
 def logout():
@@ -76,6 +87,15 @@ def inject_permissions():
     os templates durante a renderização.
     """
     return dict(Permissions=Permissions)
+
+
+@bp.before_app_request
+def atualization_ping():
+
+    if current_user.is_authenticated:
+        current_user.ping()
+        if not current_user.confirmed and request.endpoint and request.blueprint != 'bp' and request.endpoint != 'static':
+            return redirect(url_for('bp.unconfirmed'))
 
 
 def configure(app):

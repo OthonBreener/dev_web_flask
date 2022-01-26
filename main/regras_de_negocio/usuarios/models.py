@@ -1,4 +1,4 @@
-from email.policy import default
+from datetime import datetime
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,6 +16,13 @@ class Usuario(UserMixin, database.Model):
     password_hash = database.Column(database.String(128))
     confirmed = database.Column(database.Boolean, default=False)
     role_id = database.Column(database.Integer, database.ForeignKey('regras.id'))
+
+    name = database.Column(database.String(64))
+    location = database.Column(database.String(64))
+    about_me = database.Column(database.Text())
+    membro_desde = database.Column(database.DateTime(), default=datetime.utcnow)
+    visto_por_ultimo = database.Column(database.DateTime(), default=datetime.utcnow)
+
 
     def __repr__(self) -> str:
         return '<Usuario %r>' % self.user_name
@@ -74,6 +81,12 @@ class Usuario(UserMixin, database.Model):
         self.confirm = True
         database.session.add(self)
         return True
+
+
+    def ping(self):
+        self.visto_por_ultimo = datetime.utcnow()
+        database.session.add(self)
+        database.session.commit()
 
 
 class UsuarioAnonimo(AnonymousUserMixin):
