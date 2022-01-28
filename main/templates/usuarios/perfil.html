@@ -1,40 +1,44 @@
 {% extends "base.html" %}
-{% block title %} Flaksky - {{ user.user_name}}{% endblock %}
+{% block title %} Flaksky - {{ user.user_name }}{% endblock %}
 
 {% block page_content %} 
 
 <div class="page_header">
-    <h1>{{ user.user_name }}</h1>
+    <img align="left" hspace="55" class="img-rounded profile-thumbnail" src="{{ imagem }}"
+        width="250" height="300">
+    <div class="profile-header">
+        <h1>{{ user.user_name }}</h1>
 
-    {% if user.name or user.location %}
-    <p>
-        {% if user.name %}{{ user.name }}{% endif %}
-        {% if user.location %}
-            - <a href="http://maps.google.com/?q={{ user.location }}">
-                {{ user.location }}
-            </a>
+        {% if user.name or user.location %}
+        <p>
+            {% if user.name %}{{ user.name }}{% endif %}
+            {% if user.location %}
+                - <a href="http://maps.google.com/?q={{ user.location }}">
+                    {{ user.location }}
+                </a>
+            {% endif %}
+        </p>
         {% endif %}
-    </p>
-    {% endif %}
 
-    {% if current_user.is_administrador() %}
-    <p><a href="mailto:{{ user.email }}">{{ user.email}}</a></p>
-    {% endif %}
+        {% if current_user.is_administrador() %}
+        <p><a href="mailto:{{ user.email }}">{{ user.email}}</a></p>
+        {% endif %}
 
-    {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+        {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
 
-    <p>
-        Membro desde: {{ user.membro_desde }}.
-    </p>
-    <p>
-        Visto por último em: {{ user.visto_por_ultimo }}
-    </p>
+        <p>
+            Membro desde: {{ user.membro_desde }}.
+        </p>
+        <p>
+            Visto por último em: {{ user.visto_por_ultimo }}
+        </p>
 
-    {% if user == current_user %}
-    <a class="btn btn-default" href="{{ url_for('bp.editar_perfil') }}">
-        Editar Perfil
-    </a>
-    {% endif %}
+        {% if user == current_user %}
+        <a class="btn btn-default" href="{{ url_for('bp.editar_perfil') }}">
+            Editar Perfil
+        </a>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}

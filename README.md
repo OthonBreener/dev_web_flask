@@ -23,3 +23,8 @@ python -m unittest
 
 *  Rodando um arquivo especifico: 
 python -m unittest tests/unit/test_user_model.py
+
+## Migração do banco de dados
+
+* flask db migrate -m "Descrição"
+* flask db upgrade

@@ -19,7 +19,12 @@ def index():
 @bp.route('/<user_name>')
 def perfil_de_usuario(user_name):
     user = Usuario.query.filter_by(user_name=user_name).first_or_404()
-    return render_template('usuarios/perfil.html', user=user)
+    
+    return render_template(
+            'usuarios/perfil.html', 
+            user=user,
+            imagem=url_for('static', filename='imagens/' + user.imagem)
+        )
 
 
 @bp.route('/editar-perfil', methods=['GET', 'POST'])
@@ -27,11 +32,20 @@ def perfil_de_usuario(user_name):
 def editar_perfil():
 
     form = EditarPerfil()
+    
     if form.validate_on_submit():
         current_user.name = form.name.data
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
         
+        imagem = form.imagem.data
+        formato = imagem.mimetype.split('/')[-1]
+        caminho = '/home/othonbreener/Documentos/EstudosPython/dev_web_flask/main/static/imagens/'
+        name_image = caminho + 'user_' + current_user.user_name + '.' + formato
+
+        imagem.save(name_image)
+        current_user.imagem = 'user_' + current_user.user_name + '.' + formato
+
         database.session.add(current_user._get_current_object())
         database.session.commit()
         flash('Seu perfil foi atualizado com sucesso!')
@@ -128,13 +142,6 @@ def logout():
     logout_user()
     flash('Você foi desconectado!')
     return redirect(url_for('bp.index'))
-
-
-@bp.route('/admin')
-@login_required
-@admin_required
-def apenas_adms():
-    return {'message':'Apenas AMDs'}
 
 
 @bp.app_context_processor

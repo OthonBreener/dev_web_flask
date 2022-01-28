@@ -11,8 +11,8 @@ class EditarPerfil(FlaskForm):
     name = StringField('Nome completo', validators=[Length(0, 64)])
     location = StringField('Localização', validators=[Length(0, 64)])
     about_me = TextAreaField('Sobre mim')
-    submit = SubmitField('Enviar')
     imagem = FileField('Foto')
+    submit = SubmitField('Enviar')
 
 
 class AdmEditPerfil(FlaskForm):
@@ -34,7 +34,7 @@ class AdmEditPerfil(FlaskForm):
     location = StringField('Localização', validators=[Length(0, 64)])
     about_me = TextAreaField('Sobre mim')
     submit = SubmitField('Enviar')
-
+    imagem = FileField('Foto')
 
     def __init__(self, user, *args, **kwargs):
         super(AdmEditPerfil, self).__init__(*args, **kwargs)

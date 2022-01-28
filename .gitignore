@@ -4,3 +4,4 @@ __pycache__
 data.sqlite
 database.db
 database_fake.db
+imagens/

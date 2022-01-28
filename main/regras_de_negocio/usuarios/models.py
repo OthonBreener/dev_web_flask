@@ -22,6 +22,7 @@ class Usuario(UserMixin, database.Model):
     about_me = database.Column(database.Text())
     membro_desde = database.Column(database.DateTime(), default=datetime.utcnow)
     visto_por_ultimo = database.Column(database.DateTime(), default=datetime.utcnow)
+    imagem = database.Column(database.String(64))
 
 
     def __repr__(self) -> str:
