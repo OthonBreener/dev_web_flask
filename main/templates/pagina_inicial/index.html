@@ -14,4 +14,36 @@
   </h1>
 </div>
 
+<div>
+  {% if current_user.can(Permissions.ESCREVER_POSTAGENS) %}
+  {{ wtf.quick_form(form) }}
+  {% endif %}  
+</div>
+
+<ul class="posts">
+  {% for post in posts %}
+  <li class="post">
+    <div class="profile-thumbnail">
+      <a href="{{ url_for('bp.perfil_de_usuario', user_name=post.autor.user_name) }}">
+        <img class="iprofile-thumbnail"
+        {% if post.autor.imagem %}
+          src="{{ url_for('static', filename='imagens/' + post.autor.imagem) }}"
+        {% else %}
+          src="{{ url_for('static', filename='imagens/perfil.png') }}"
+        {% endif %}
+        align="left" width="70" height="70"
+        >  
+      </a>
+    </div>
+    <div class="post-date">{{post.hora_postagem}}</div>
+    <div class="post-author">
+      <a href="{{ url_for('bp.perfil_de_usuario', user_name=post.autor.user_name) }}">
+        {{ post.autor.user_name }}
+      </a>
+    </div>
+    <div class="post-body">{{ post.corpo }}</div>
+  </li>
+  {% endfor %}
+</ul>
+
 {% endblock %}

@@ -15,14 +15,15 @@ class Usuario(UserMixin, database.Model):
     user_name = database.Column(database.String(64), unique=True, index=True)
     password_hash = database.Column(database.String(128))
     confirmed = database.Column(database.Boolean, default=False)
-    role_id = database.Column(database.Integer, database.ForeignKey('regras.id'))
-
     name = database.Column(database.String(64))
     location = database.Column(database.String(64))
     about_me = database.Column(database.Text())
     membro_desde = database.Column(database.DateTime(), default=datetime.utcnow)
     visto_por_ultimo = database.Column(database.DateTime(), default=datetime.utcnow)
     imagem = database.Column(database.String(64))
+
+    role_id = database.Column(database.Integer, database.ForeignKey('regras.id'))
+    posts = database.relationship('Postagens', backref='autor', lazy='dynamic')
 
 
     def __repr__(self) -> str:

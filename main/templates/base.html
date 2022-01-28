@@ -1,7 +1,12 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Flasky{% endblock %}
-{% block navbar %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+
+{% block navbar %}
 
 <div class="navbar navbar-inverse" role="navigation">
   <div class="container">
@@ -16,7 +21,7 @@
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="/user">Home</a></li>
+        <li><a href="/post">Home</a></li>
         
         {% if current_user.is_authenticated %} 
         <li>

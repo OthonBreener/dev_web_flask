@@ -41,11 +41,17 @@ class RegrasDeAcesso(database.Model):
     @staticmethod
     def inserir_regras():
         regras = {
-            'usuario':[Permissions.ADICIONAR_AO_CARRINHO, Permissions.FINALIZAR_COMPRA],
+            'usuario':[
+                Permissions.ADICIONAR_AO_CARRINHO, 
+                Permissions.FINALIZAR_COMPRA,
+                Permissions.LER_POSTAGENS,
+                Permissions.ESCREVER_POSTAGENS],
+
             'administrador':[
                 Permissions.VISUALIZAR_USUARIOS_CADASTRADOS,
                 Permissions.REMOVER_USUARIO_CADASTRADO,
-                Permissions.ADMINISTRADOR
+                Permissions.ADMINISTRADOR,
+                Permissions.LER_POSTAGENS
             ]
         }
 
@@ -72,5 +78,7 @@ class Permissions:
     FINALIZAR_COMPRA=2
     VISUALIZAR_USUARIOS_CADASTRADOS=4
     REMOVER_USUARIO_CADASTRADO=8
-    ADMINISTRADOR=16
+    ESCREVER_POSTAGENS = 16
+    LER_POSTAGENS = 32
+    ADMINISTRADOR=64
 

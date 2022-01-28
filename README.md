@@ -28,3 +28,12 @@ python -m unittest tests/unit/test_user_model.py
 
 * flask db migrate -m "Descrição"
 * flask db upgrade
+
+## Inserindo as regras de acesso no banco de dados
+
+* from main.regras_de_negocio.governancia.models import RegrasDeAcesso as Regras
+* Regras.inserir_regras()
+* adm = Regras.query.filter_by(name='administrador').first()
+* user = Usuario.query.filter_by(user_name='Othon').fisrt()
+* user.regra = Regras.query.filter_by(name='administrador').fisrt()
+* db.session.commit()

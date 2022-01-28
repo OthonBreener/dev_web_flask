@@ -20,10 +20,14 @@ def index():
 def perfil_de_usuario(user_name):
     user = Usuario.query.filter_by(user_name=user_name).first_or_404()
     
+    imagem = url_for('static', filename='imagens/perfil.png')
+    if user.imagem:
+        imagem = url_for('static', filename='imagens/' + user.imagem)
+
     return render_template(
             'usuarios/perfil.html', 
             user=user,
-            imagem=url_for('static', filename='imagens/' + user.imagem)
+            imagem=imagem
         )
 
 
@@ -122,7 +126,7 @@ def login():
             next = request.args.get('next')
         
             if next is None or not next.startswith('/'):
-                next = url_for('bp.index') # nome da função view acossiada
+                next = url_for('bp.perfil_de_usuario', user_name=user.user_name) # nome da função view acossiada
 
             return redirect(next)
 
