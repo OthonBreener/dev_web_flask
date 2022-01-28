@@ -3,7 +3,7 @@ from wtforms import StringField, TextAreaField, SubmitField, BooleanField, Selec
 from wtforms.validators import Length, DataRequired, Regexp, Email
 
 from main.regras_de_negocio.governancia.models import RegrasDeAcesso
-from main.regras_de_negocio.usuarios.models import Usuario
+from main.regras_de_negocio.usuarios.dominio.orm.models import Usuario
 
 
 class EditarPerfil(FlaskForm):

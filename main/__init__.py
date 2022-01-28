@@ -20,7 +20,7 @@ def create_app(config_name):
     bootsprap.init_app(app)
     login_manager.init_app(app)
 
-    from main.regras_de_negocio.usuarios import routes
+    from main.regras_de_negocio.usuarios.pontos_de_entrada import routes
 
     routes.configure(app)
 

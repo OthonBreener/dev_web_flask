@@ -1,7 +1,7 @@
 import unittest
 from main import create_app, database
 from main.regras_de_negocio.governancia.models import Permissions, RegrasDeAcesso
-from main.regras_de_negocio.usuarios.models import Usuario
+from main.regras_de_negocio.usuarios.dominio.orm.models import Usuario
 
 class UserModelTestCase(unittest.TestCase):
 

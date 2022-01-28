@@ -2,7 +2,7 @@ from os import getenv
 from flask import render_template
 from flask_migrate import Migrate
 from main import create_app, database
-from main.regras_de_negocio.usuarios.models import Usuario
+from main.regras_de_negocio.usuarios.dominio.orm.models import Usuario
 
 app = create_app(getenv('FLASK_CONFIG'))
 migrate = Migrate(app, database)
