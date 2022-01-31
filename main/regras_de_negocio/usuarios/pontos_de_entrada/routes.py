@@ -1,10 +1,11 @@
-from flask import Blueprint, flash, render_template, redirect, url_for, request
+from flask import Blueprint, flash, render_template, redirect, url_for, request, abort
 from flask_login import current_user, login_required, login_user, logout_user
 from main.formularios.perfil import AdmEditPerfil, EditarPerfil
 from main.regras_de_negocio.governancia.models import Permissions, RegrasDeAcesso
 from main.regras_de_negocio.usuarios.decoradores.decorador import admin_required, permission_required
 from main.regras_de_negocio.usuarios.dominio.orm.models import Usuario
 from main.formularios.auth import LoginForm, RegistrationForm
+from main.regras_de_negocio.blog.dominio.orm.models import Postagens
 from main import database
 
 
@@ -19,7 +20,11 @@ def index():
 @bp.route('/<user_name>')
 def perfil_de_usuario(user_name):
     user = Usuario.query.filter_by(user_name=user_name).first_or_404()
-    
+    if user is None:
+        abort(404)
+
+    posts = user.posts.order_by(Postagens.hora_postagem.desc()).all()
+
     imagem = url_for('static', filename='imagens/perfil.png')
     if user.imagem:
         imagem = url_for('static', filename='imagens/' + user.imagem)
@@ -27,7 +32,8 @@ def perfil_de_usuario(user_name):
     return render_template(
             'usuarios/perfil.html', 
             user=user,
-            imagem=imagem
+            imagem=imagem,
+            posts=posts
         )
 
 
