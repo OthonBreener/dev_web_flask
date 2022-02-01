@@ -5,6 +5,7 @@ basedir = path.abspath(path.dirname(__file__))
 class Config:
     SECRET_KEY = getenv('SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    FLASK_POSTS_PER_PAGE = 10
     ADMIN= getenv('ADMIN')
 
     @staticmethod

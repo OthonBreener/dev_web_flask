@@ -11,12 +11,6 @@ from main import database
 
 bp = Blueprint('bp', __name__, url_prefix='/user')
 
-
-@bp.route('/')
-def index():
-    return render_template('pagina_inicial/index.html')
-
-
 @bp.route('/<user_name>')
 def perfil_de_usuario(user_name):
     user = Usuario.query.filter_by(user_name=user_name).first_or_404()
