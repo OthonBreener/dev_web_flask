@@ -1,3 +1,7 @@
+"""
+Camada de serviços: é o principal caminho para o nosso aplicativo
+"""
+
 from contexto_de_negocio.alocacoes.adaptadores.repositorio import (
     RepositorioSqlAlchemy)
 from contexto_de_negocio.alocacoes.dominio.models import Pedido, alocar_pedido
@@ -16,8 +20,7 @@ def alocar(pedido: Pedido, repositorio: RepositorioSqlAlchemy, session) -> str:
     lotes = repositorio.list()
     if not identificador_valido(pedido.identificador, lotes):
         raise IdentificadorInvalido(f'Identificado Inválido {pedido.identificador}')
-    
+
     referencia_de_lote = alocar_pedido(pedido, lotes)
     session.commit()
     return referencia_de_lote
-
